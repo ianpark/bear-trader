@@ -18,7 +18,8 @@ CMD = {
     'currency': '/currency/',
     'trades': '/trades/',  # Recent Complete Orders
     'ticker': '/ticker/',
-    'complete_order': '/v2/order/complete_orders/'
+    'complete_order': '/v2/order/complete_orders/',
+    'pending_order': '/v2/order/limit_orders/'
 }
 def cmd_to_url(cmd):
     return APIURL + CMD[cmd]

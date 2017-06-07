@@ -9,8 +9,7 @@ from trader import Trader
 from trader_eth import EthTrader
 from trader_btc import BtcTrader
 
-
-log = logging.getLogger(__name__)
+log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 
 TRADER_MAP = {
@@ -45,8 +44,7 @@ def background():
     Run background trading services
     """
     trader_list = [
-        {'name': 'Tom', 'krw': 10000000, 'algo': 'random', 'currency': 'eth'},
-        {'name': 'Ian', 'krw': 10000000, 'algo': 'type1', 'currency': 'eth'}]
+        {'name': 'Ian', 'krw': 10000000, 'algo': 'random', 'currency': 'eth'}]
     traders = [get_trader(x) for x in trader_list]
     try:
         coinone = Coinone('eth')

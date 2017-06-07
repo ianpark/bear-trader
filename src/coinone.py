@@ -16,13 +16,10 @@ from tornado import gen
 
 from coinone_core import get_private, get_public
 
+from util import percent, diff_recent, diff_period
+
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-
-def percent(a, b):
-    a = float(a)
-    b = float(b)
-    return round(100 * (b - a) / a, 4)
 
 class Coinone(object):
     """
@@ -35,6 +32,10 @@ class Coinone(object):
         log.info('Coinone module start')
         self.currency = currency
         self.run = True
+        self.completed_order = None
+        self.pending_order = None
+        self.balance = None
+        self.latest_analytics = None
 
     @gen.coroutine
     def start(self):
@@ -43,22 +44,30 @@ class Coinone(object):
         """
         self.start_collection()
         self.start_sync()
+        self.start_ticker()
         log.debug('[%s] Coinone trader started!', self.currency)
 
+    @gen.coroutine
+    def start_ticker(self):
+        while self.run:
+            if self.completed_order:
+                log.debug(self.completed_order)
+            if self.latest_analytics:
+                log.debug(self.latest_analytics)
+            if self.pending_order:
+                log.debug(self.pending_order)
+            if self.balance:
+                log.debug(self.balance)
+            yield gen.sleep(5)
+
     def add_trader(self, trader):
+        """
+        Add a trader
+        """
+        if trader.currency is not self.currency:
+            log.error('Failed to add %s due to the different currency', trader.name)
         log.debug('Added %s:%d to Coinone:%s', trader.name, trader.coin, self.currency)
         self.traders.append(trader)
-
-    def diff_recent(self, sold_list, now_time, seconds):
-        for item in reversed(sold_list):
-            if int(item['timestamp']) < (now_time - seconds):  # 5min
-                price_change = int(sold_list[-1]['price']) - int(item['price'])
-                price_change_pc = percent(int(item['price']), int(sold_list[-1]['price']))
-                return (price_change, price_change_pc)
-        return (0, 0)
-
-    def diff_period(self, begin, end):
-        return (int(end)-int(begin), percent(int(begin), int(end)))
 
     def analyze_trade_list(self, trades):
         """
@@ -67,10 +76,11 @@ class Coinone(object):
         now_time = int(trades.get('timestamp'))
         sold_list = trades.get('completeOrders', [])
         if sold_list:
-            price_change_60, price_change_60_pc = self.diff_period(sold_list[0]['price'], sold_list[-1]['price'])
-            price_change_day, price_change_day_pc = self.diff_period(self.ticker['first'], self.ticker['last'])
-            price_change_5, price_change_5_pc = self.diff_recent(sold_list, now_time, 300)
-            price_change_1, price_change_1_pc = self.diff_recent(sold_list, now_time, 60)
+            price_change_60, price_change_60_pc = diff_period(sold_list[0]['price'], sold_list[-1]['price'])
+            price_change_day, price_change_day_pc = diff_period(self.ticker['first'], self.ticker['last'])
+            price_change_5, price_change_5_pc = diff_recent(sold_list, now_time, 300)
+            price_change_1, price_change_1_pc = diff_recent(sold_list, now_time, 60)
+
             analytics = {
                 'price': int(self.ticker['last']),
                 'change': {
@@ -84,7 +94,7 @@ class Coinone(object):
                     'pc_1min': price_change_1_pc
                 }
             }
-            log.debug(analytics)
+            self.latest_analytics = analytics
             for trader in self.traders:
                 trader.feed(analytics)
 
@@ -98,8 +108,6 @@ class Coinone(object):
                 self.ticker = yield get_public('ticker', {'currency' : self.currency})
                 trades = yield get_public('trades', {'currency' : self.currency})
                 self.analyze_trade_list(trades)
-                yield self.completed_order()
-
                 yield gen.sleep(5)
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -112,7 +120,9 @@ class Coinone(object):
     def start_sync(self):
         while self.run:
             try:
-                yield self.completed_order()
+                self.sync_completed_order()
+                self.sync_pending_order()
+                self.sync_balance()
                 yield gen.sleep(5)
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -120,16 +130,6 @@ class Coinone(object):
                 log.error('Exceptio: %s %s %s', exc_type, fname, exc_tb.tb_lineno)
                 log.error('Failed collecting trade information %s', e.message)
                 yield gen.sleep(1)
-
-
-    @gen.coroutine
-    def get_balance(self):
-        """
-        Return balance JSON
-        """
-        log.debug('Get balance')
-        content = yield get_private('balance')
-        raise gen.Return(content)
 
     @gen.coroutine
     def get_trade(self):
@@ -145,16 +145,25 @@ class Coinone(object):
             log.debug('Time range: %d', (end_time - start_time))
 
     @gen.coroutine
-    def completed_order(self):
-        co = yield get_private('complete_order', {'currency': self.currency})
-        print co
+    def sync_balance(self):
+        """
+        Return balance JSON
+        """
+        self.balance = yield get_private('balance')
 
-    def limit_sell(self, amount):
+    @gen.coroutine
+    def sync_completed_order(self):
         """
-        Place an order for limit sell, return order number
+        Get the completed order and save to member variable
         """
-        order_no = 1
-    
+        self.completed_order = yield get_private('complete_order', {'currency': self.currency})
+
+    @gen.coroutine
+    def sync_pending_order(self):
+        """
+        Get the pending order and save to member variable
+        """
+        self.pending_order = yield get_private('pending_order', {'currency': self.currency})
 """
     a. 1시간 등락폭 모니터
       event: 1%이상 하락시
