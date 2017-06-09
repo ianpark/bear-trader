@@ -9,8 +9,6 @@ from tornado.httputil import url_concat
 
 
 APIURL = 'https://api.coinone.co.kr'
-ACCESS_TOKEN = 'd88701ee-1e64-4051-86ea-dfbaffcf5258'
-SECRET_KEY = '536c360d-ee64-4376-89f3-9612b15d0f69'
 
 CMD = {
     'balance': '/v2/account/balance/',
