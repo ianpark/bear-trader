@@ -1,0 +1,19 @@
+{
+  "name": "poloniex",
+  "version": "1.0.0",
+  "description": "Poloniex Ochestrator",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ian Park",
+  "license": "ISC",
+  "dependencies": {
+    "Q": "0.0.1",
+    "autobahn": "^17.5.2",
+    "bluebird": "^3.5.0",
+    "co": "^4.6.0",
+    "poloniex.js": "0.0.7",
+    "q": "^1.5.0"
+  }
+}
