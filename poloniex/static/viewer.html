@@ -10,7 +10,7 @@
         <script src="/js/q.js"></script>
         <script src="/js/bt.min.js"></script>
     </head>
-    <body>
+    <body style="margin: 10px">
     <tabset>
     <tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active">
         {{tab.content}}
@@ -22,7 +22,12 @@
     }
     thead, tbody { display: table-header-group;}
     </style>
-
+  <div class="alert alert-success" style="width:450px">
+    <strong>Bear Trader!</strong><br><br>한눈에 코인원과 폴로닉스의 현황을 볼수있는 코인 정보페이지를 개발중입니다. 아직 초기단계라 편리한 기능이 부족하나, 여건이 되면 점차 기능과 완성도를 높힐 계획입니다. 특히 API키 없이 트레이딩에 편리한기능을 제공하기위해서 아이디어를 구상중입니다.<br>작은 기부도 개발과 서버 운영에 큰 도움이 됩니다.<br>감사합니다.<br><br>
+        <h6>
+        비트코인지갑 주소 : 13qQYpdzLFgVUqkr5afBvNQmikFaBW6iCp<br>
+        이더리움지갑 주소 : 0xC08C3FFB11C932B675A7424EE58314531872C265</h6>
+  </div>
     <div id="coinone_ticker" ng-controller="coinone_ticker_ctrl" style='width:650px;'>
         <h4>코인원 현황</h4>
         <table class="table table-striped price-list" style='width:430px;border: 1px #bbbbbb solid;'>
@@ -85,10 +90,5 @@
         </tbody>
         </table>
     </div>
-    <h5>한눈에 코인원과 폴로닉스의 현황을 볼수있는 코인 정보페이지를 개발중입니다.<br>
-        특히 API키 없이 트레이딩에 편리한기능을 제공하기위해서 아이디어를 구상중인데,<br>
-        작은 도네이션도 개발과 서버 운영에 큰 도움이 됩니다. 감사합니다.<br>
-        비트코인지갑 주소 : 13qQYpdzLFgVUqkr5afBvNQmikFaBW6iCp<br>
-        이더리움지갑 주소 : 0xC08C3FFB11C932B675A7424EE58314531872C265</h5>
     </body>
 </html>
