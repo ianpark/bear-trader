@@ -32,13 +32,20 @@ let trade_history = {};
 let coinone_day = {};
 let coinone_price_change = [];
 
+
 var app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
+
+var getClientAddress = function (req) {
+    return (req.headers['x-forwarded-for'] || '').split(',')[0] 
+    || req.connection.remoteAddress;
+};
+
 app.get('/', function(req, res) {
       res.sendFile(__dirname + "/static/viewer.html");
+      console.log(getClientAddress(req));
 });
-
 
 app.get('/polo/ticker/:currency?', function(req, res) {
     let currency = req.params.currency;

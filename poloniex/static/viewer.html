@@ -8,7 +8,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
         <script src="/js/js.cookie.js"></script>
         <script src="/js/q.js"></script>
-        <script src="/js/bt.js"></script>
+        <script src="/js/bt.min.js"></script>
     </head>
     <body>
     <tabset>
@@ -24,7 +24,8 @@
     </style>
 
     <div id="coinone_ticker" ng-controller="coinone_ticker_ctrl" style='width:450px;'>
-        <table class="table table-striped price-list" style='width:430px;'>
+        코인원 현황
+        <table class="table table-striped price-list" style='width:430px;border: 1px #bbbbbb solid;'>
         <thead>
             <tr>
                 <td>종류</td>
@@ -59,8 +60,9 @@
         </tbody>
         </table>
     </div>
-    <div id="polo_ticker" ng-controller="polo_ticker_ctrl" style='overflow-x:hidden;overflow-y:scroll;height:500px;width:550px;padding-right:35px;'> 
-        <table class="table table-striped price-list" style='width:470px;'>
+    <div id="polo_ticker" ng-controller="polo_ticker_ctrl" style='overflow-x:hidden;overflow-y:scroll;height:400px;width:450px;padding-right:35px;border: 1px #bbbbbb solid;'>
+        Poloniex 현황
+        <table class="table table-striped price-list" style='width:440px;'>
         <thead>
             <tr>
                 <td>Coin</td>
@@ -83,5 +85,6 @@
         </tbody>
         </table>
     </div>
+    Donate Bitcoin: 13qQYpdzLFgVUqkr5afBvNQmikFaBW6iCp
     </body>
 </html>
