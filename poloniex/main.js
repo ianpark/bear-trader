@@ -197,7 +197,7 @@ function * coinone_history() {
 function * init() {
     try {
         config = JSON.parse(yield fs.readFileAsync(config_file_path, 'utf8'));
-        var cred = JSON.parse(yield fs.readFileAsync(config.keyfile_path, 'utf8'));
+        //var cred = JSON.parse(yield fs.readFileAsync(config.keyfile_path, 'utf8'));
         //poloniex = Bluebird.promisifyAll(new Poloniex(cred.key, cred.secret));
         //yield market_data.start(); 
         console.log('Module Initialised');

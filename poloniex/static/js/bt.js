@@ -27,7 +27,6 @@ var plus_minus = function(myValue){
 var get_premium = function (key) {
     var polo_krw = polo_ticker['USDT_' + key.toUpperCase()].last / USDT * fx.USD.KRW;
     var co = coinone_ticker[key].last;
-    console.log(co);
     return (co - polo_krw)/polo_krw * 100;
 }
 
