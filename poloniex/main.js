@@ -4,7 +4,7 @@ let path = require('path'),
     _ = require('lodash'),
     Bluebird = require("bluebird"),
     fs = Bluebird.promisifyAll(require("fs")),
-    Poloniex = require("poloniex.js"),
+    //Poloniex = require("poloniex.js"),
     //MarketData = require("./market_data"),
     express = require('express'),
     bodyParser = require('body-parser'),
@@ -22,7 +22,7 @@ function isEmptyObject(obj) {
 
 // Variables
 const config_file_path = path.resolve(__dirname, 'config.json');
-let poloniex = null;
+//let poloniex = null;
 let balance = {};
 let open_order = {};
 let config = {};
@@ -198,7 +198,7 @@ function * init() {
     try {
         config = JSON.parse(yield fs.readFileAsync(config_file_path, 'utf8'));
         var cred = JSON.parse(yield fs.readFileAsync(config.keyfile_path, 'utf8'));
-        poloniex = Bluebird.promisifyAll(new Poloniex(cred.key, cred.secret));
+        //poloniex = Bluebird.promisifyAll(new Poloniex(cred.key, cred.secret));
         //yield market_data.start(); 
         console.log('Module Initialised');
     } catch(e) {
@@ -208,9 +208,9 @@ function * init() {
 
 function * sync() {
     try {
-        balance = yield poloniex.returnCompleteBalancesAsync();
-        open_order = yield poloniex.returnAllOpenOrdersAsync();
-        trade_history = yield poloniex.returnAllTradeHistoryAsync();   
+        //balance = yield poloniex.returnCompleteBalancesAsync();
+        //open_order = yield poloniex.returnAllOpenOrdersAsync();
+        //trade_history = yield poloniex.returnAllTradeHistoryAsync();   
     } catch(e) {
         console.log('Error ' + e.stack);
     }
