@@ -8,7 +8,7 @@ var polo_ticker = {};
 var coinone_ticker = {};
 var coinone_price_trend = {};
 var fx = {};
-var USDT = 1.01;
+var USDT = 1.03;
 
 var convert_to_list = function(input) {
     return Object.keys(input).map(function(key) {
