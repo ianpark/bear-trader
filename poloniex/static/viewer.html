@@ -79,7 +79,7 @@
             </tr>
         </thead>
         <tbody>
-        <tr ng-show="c.name.startsWith('BTC')" ng-repeat="c in polo_ticker | orderBy: '-data.percentChange'">
+        <tr ng-show="c.name.startsWith('BTC')" ng-repeat="c in polo_ticker | orderBy: 'name'">
             <td>{{c.name}}</td>
             <td>{{c.data.last}}</td>
             <td>{{btc_to_usd(c.data.last) | number : 2}}</td>
