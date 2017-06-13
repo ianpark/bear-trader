@@ -5,7 +5,7 @@ let path = require('path'),
     Bluebird = require("bluebird"),
     fs = Bluebird.promisifyAll(require("fs")),
     Poloniex = require("poloniex.js"),
-    MarketData = require("./market_data"),
+    //MarketData = require("./market_data"),
     express = require('express'),
     bodyParser = require('body-parser'),
     rp = require('request-promise');
@@ -27,7 +27,7 @@ let balance = {};
 let open_order = {};
 let config = {};
 let trade_history = {};
-let market_data = new MarketData();
+//let market_data = new MarketData();
 
 let coinone_day = {};
 let coinone_price_change = [];

@@ -52,7 +52,7 @@ function get_coinone_ticker(){
         for (key in coinone_ticker) {
             coinone_ticker[key].premium = get_premium(key);
         }
-        $.get('http://127.0.0.1:7540/coinone/price_change', function(data, status) {
+        $.get('/coinone/price_change', function(data, status) {
             coinone_price_trend = data;
             coinone_price_trend.forEach(function(item){
                 coinone_ticker[item.currency].trend = item.cases;
