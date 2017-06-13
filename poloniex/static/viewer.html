@@ -1,0 +1,87 @@
+<html ng-app="myApp">
+    <head>
+        <title>Bear Trader</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.5.0/lodash.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+        <script src="/js/js.cookie.js"></script>
+        <script src="/js/q.js"></script>
+        <script src="/js/bt.js"></script>
+    </head>
+    <body>
+    <tabset>
+    <tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active">
+        {{tab.content}}
+    </tab>
+    </tabset>
+    <style>
+    table.price-list {
+        font-size: 8pt;
+    }
+    thead, tbody { display: table-header-group;}
+    </style>
+
+    <div id="coinone_ticker" ng-controller="coinone_ticker_ctrl" style='width:450px;'>
+        <table class="table table-striped price-list" style='width:430px;'>
+        <thead>
+            <tr>
+                <td>종류</td>
+                <td>고점</td>
+                <td>저점</td>
+                <td>현재가</td>
+                <td>포지션</td>
+                <td>프리미엄</td>
+                <td>1분</td>
+                <td>5분</td>
+                <td>30분</td>
+                <td>1시간</td>
+                <td>6시간</td>
+                <td>하루</td>
+            </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="(key, val) in coinone_ticker">
+            <td>{{key | uppercase }}</td>
+            <td>{{val.high}}</td>
+            <td>{{val.low}}</td>
+            <td>{{val.last}}</td>
+            <td>{{((val.high-val.last)/(val.high-val.low)) | number : 2}}</td>
+            <td ng-style="plus_minus(val.premium)">{{val.premium | number : 1}}%</td>
+            <td ng-style="plus_minus(val.trend.min_1)">{{val.trend.min_1 | number : 2}}%</td>
+            <td ng-style="plus_minus(val.trend.min_5)">{{val.trend.min_5 | number : 2}}%</td>
+            <td ng-style="plus_minus(val.trend.min_30)">{{val.trend.min_30 | number : 2}}%</td>
+            <td ng-style="plus_minus(val.trend.hour_1)">{{val.trend.hour_1 | number : 2}}%</td>
+            <td ng-style="plus_minus(val.trend.hour_6)">{{val.trend.hour_6 | number : 2}}%</td>
+            <td ng-style="plus_minus(val.trend.hour_24)">{{val.trend.hour_24 | number : 2}}%</td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+    <div id="polo_ticker" ng-controller="polo_ticker_ctrl" style='overflow-x:hidden;overflow-y:scroll;height:500px;width:550px;padding-right:35px;'> 
+        <table class="table table-striped price-list" style='width:470px;'>
+        <thead>
+            <tr>
+                <td>Coin</td>
+                <td>Current (BTC)</td>
+                <td>Current (USD)</td>
+                <td>Current (KRW)</td>
+                <td>Position</td>
+                <td>Daily</td>
+            </tr>
+        </thead>
+        <tbody>
+        <tr ng-show="c.name.startsWith('BTC')" ng-repeat="c in polo_ticker | orderBy: '-data.percentChange'">
+            <td>{{c.name}}</td>
+            <td>{{c.data.last}}</td>
+            <td>{{btc_to_usd(c.data.last) | number : 2}}</td>
+            <td>{{btc_to_krw(c.data.last) | number : 2}}</td>
+            <td>{{((c.data.high24hr-c.data.last)/(c.data.high24hr-c.data.low24hr)) | number : 2}}</td>
+            <td ng-style="plus_minus(c.data.percentChange)">{{c.data.percentChange * 100 | number : 1}}%</td>
+        </tr>
+        </tbody>
+        </table>
+    </div>
+    </body>
+</html>

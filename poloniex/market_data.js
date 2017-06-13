@@ -17,9 +17,11 @@ class MarketData {
     }
     open_websocket() {
        this.connection.onopen = (session) => {
+           console.log("Websocket connected!");
             this.session = session;
             this.session.subscribe('ticker', (args, kwargs) => {
                 let ticker = args;
+                let pos = (parseFloat(ticker[8]) - parseFloat(ticker[1]))/(parseFloat(ticker[8]) - parseFloat(ticker[9]));
                 this.ticker[ticker[0]] = {
                     last: parseFloat(ticker[1]),
                     lowestAsk: parseFloat(ticker[2]),
@@ -29,22 +31,23 @@ class MarketData {
                     quoteVolume: parseFloat(ticker[6]),
                     isFrozen: ticker[7],
                     high24hr: parseFloat(ticker[8]),
-                    low24hr: parseFloat(ticker[9])
+                    low24hr: parseFloat(ticker[9]),
+                    pos: pos
                 };
             });
         };
         this.connection.onclose = () => {
             console.log("Websocket connection closed");
-            setTimeout(this.connection.open(), 1000);
+            setTimeout(this.connection.open, 1000);
         };
         this.connection.open();
     }
     start() {
         return this.polo.returnTickerAsync()
         .then((ticker_data) => {
-            if (!ticker_data.BTC_ETH) {
-                // BTC_ETH 
-            }
+            Object.keys(ticker_data).forEach(function(key) {
+                ticker_data[key].pos = (ticker_data[key].high24hr - ticker_data[key].last)/(ticker_data[key].high24hr - ticker_data[key].low24hr);
+            });
             this.ticker = ticker_data;
             this.open_websocket();
         });
