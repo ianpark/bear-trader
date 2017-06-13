@@ -79,7 +79,7 @@ app.get('/coinone/price_change', function(req, res) {
     if (!isEmptyObject(coinone_price_change)) {
         res.status(200).json(coinone_price_change);
     } else {
-        res.status(404).send('Not Ready';
+        res.status(404).send('Not Ready');
     }
 });
 coinone_price_change
