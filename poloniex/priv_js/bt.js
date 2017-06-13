@@ -63,7 +63,7 @@ function get_coinone_ticker(){
         });
     });
 };
-setInterval(get_coinone_ticker, 10000);
+setInterval(get_coinone_ticker, 5000);
 
 function get_polo_ticker() {
     $.get(POLO_TICKER, function(data, status) {
