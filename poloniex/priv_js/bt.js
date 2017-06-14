@@ -86,6 +86,13 @@ function get_fx() {
 }
 setInterval(get_fx, 10000);
 
+function title_updator() {
+    top.document.title = parseInt(coinone_ticker['btc'].last/1000) + 'k ' + 
+                        parseInt(coinone_ticker['eth'].last/1000) + 'k ' +
+                        parseInt(coinone_ticker['xrp'].last);
+}
+setInterval(title_updator, 1000);
+
 var app = angular.module('myApp', []);
 app.controller('coinone_ticker_ctrl', ['$scope', '$window', function($scope, $window) {
     $scope.plus_minus = $window.plus_minus;
