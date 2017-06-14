@@ -20,48 +20,75 @@
     table.price-list {
         font-size: 8pt;
     }
-    thead, tbody { display: table-header-group;}
+    .table-container {
+        height: 10em;
+    }
+    table.scrollable {
+        display: flex;
+        flex-flow: column;
+        height: 95%;
+        width: 100%;
+    }
+    table.scrollable thead {
+        /* head takes the height it requires, 
+        and it's not scaled when table is resized */
+        flex: 0 0 auto;
+        width: calc(100% - 0.9em);
+    }
+    table.scrollable tbody {
+        /* body takes all the remaining available space */
+        flex: 1 1 auto;
+        display: block;
+        overflow-y: scroll;
+    }
+    table.scrollable tbody tr {
+        width: 100%;
+    }
+    table.scrollable thead, table.scrollable tbody tr {
+        display: table;
+        table-layout: fixed;
+    }
+
+
     </style>
-    <div id="coinone_ticker" ng-controller="coinone_ticker_ctrl" style='width:650px;'>
+    <div id="coinone_ticker" ng-controller="coinone_ticker_ctrl" style='width:400px;'>
         <h4>코인원 현황</h4>
-        <table class="table table-striped price-list" style='width:430px;border: 1px #bbbbbb solid;'>
+        <table class="table table-striped price-list" style='width:400px;border: 1px #bbbbbb solid;'>
         <thead>
             <tr>
                 <td>종류</td>
-                <td>고점</td>
-                <td>저점</td>
-                <td>현재가</td>
+                <td>가격</td>
                 <td>포지션</td>
-                <td>프리미엄</td>
-                <td>1분</td>
-                <td>5분</td>
-                <td>30분</td>
-                <td>1시간</td>
-                <td>6시간</td>
-                <td>하루</td>
+                <td>김프</td>
+                <td>1/5/3분</td>
+                <td>1/6/24시간</td>
             </tr>
         </thead>
         <tbody>
         <tr ng-repeat="(key, val) in coinone_ticker">
             <td>{{key | uppercase }}</td>
-            <td>{{val.high}}</td>
-            <td>{{val.low}}</td>
-            <td>{{val.last}}</td>
+            <td>{{val.high}}<br><b>{{val.last}}</b><br>{{val.low}}</td>
             <td>{{((val.high-val.last)/(val.high-val.low)) | number : 2}}</td>
-            <td ng-style="plus_minus(val.premium)">{{val.premium | number : 1}}%</td>
-            <td ng-style="plus_minus(val.trend.min_1)">{{val.trend.min_1 | number : 2}}%</td>
-            <td ng-style="plus_minus(val.trend.min_5)">{{val.trend.min_5 | number : 2}}%</td>
-            <td ng-style="plus_minus(val.trend.min_30)">{{val.trend.min_30 | number : 2}}%</td>
-            <td ng-style="plus_minus(val.trend.hour_1)">{{val.trend.hour_1 | number : 2}}%</td>
-            <td ng-style="plus_minus(val.trend.hour_6)">{{val.trend.hour_6 | number : 2}}%</td>
-            <td ng-style="plus_minus(val.trend.hour_24)">{{val.trend.hour_24 | number : 2}}%</td>
+            <td>
+                <span ng-style="plus_minus(val.premium)">{{val.premium | number : 1}}%</span>
+            </td>
+            <td>
+            <span ng-style="plus_minus(val.trend.min_1)">{{val.trend.min_1 | number : 2}}%</span><br>
+            <span ng-style="plus_minus(val.trend.min_5)">{{val.trend.min_5 | number : 2}}%</span><br>
+            <span ng-style="plus_minus(val.trend.min_30)">{{val.trend.min_30 | number : 2}}%</span>
+            </td>
+            <td>
+            <span ng-style="plus_minus(val.trend.hour_1)">{{val.trend.hour_1 | number : 2}}%</span><br>
+            <span ng-style="plus_minus(val.trend.hour_6)">{{val.trend.hour_6 | number : 2}}%</span><br>
+            <span ng-style="plus_minus(val.trend.hour_24)">{{val.trend.hour_24 | number : 2}}%</span>
+            </td>
         </tr>
         </tbody>
         </table>
     </div>
-    <div id="polo_ticker" ng-controller="polo_ticker_ctrl" style='overflow-x:hidden;overflow-y:scroll;height:400px;width:450px;padding-right:35px;'>
+    <div id="polo_ticker" class="table-container" ng-controller="polo_ticker_ctrl" style='height:400px;width:400px;display:inline-block;'>
         <h4>Poloniex 현황</h4>
-        <table class="table table-striped price-list" style='width:440px;border: 1px #bbbbbb solid;'>
+        <table class="table table-striped price-list scrollable" style="border: 1px #bbbbbb solid;">
         <thead>
             <tr>
                 <td>Coin</td>
@@ -84,12 +111,13 @@
         </tbody>
         </table>
     </div>
-    <br><br>
-    <div class="alert alert-success" style="width:450px">
+    <br><br><br>
+    <div class="alert alert-success" style="width:400px">
         <strong>Bear Trader!</strong><br><br>한눈에 코인원과 폴로닉스의 현황을 볼수있는 코인 정보페이지를 개발중입니다. 아직 초기단계라 편리한 기능이 부족하나, 여건이 되면 점차 기능과 완성도를 높힐 계획입니다. 특히 API키 없이 트레이딩에 편리한기능을 제공하기위해서 아이디어를 구상중입니다.<br>작은 기부도 개발과 서버 운영에 큰 도움이 됩니다.<br>감사합니다.<br><br>
-            <h6>
-            비트코인지갑 주소 : 13qQYpdzLFgVUqkr5afBvNQmikFaBW6iCp<br>
-            이더리움지갑 주소 : 0xC08C3FFB11C932B675A7424EE58314531872C265</h6>
+            <span style="font-size: 8pt">
+            비트코인지갑 주소: 13qQYpdzLFgVUqkr5afBvNQmikFaBW6iCp<br>
+            이더리움지갑 주소: 0xC08C3FFB11C932B675A7424EE58314531872C265
+            </span>
     </div>
     </body>
 </html>
