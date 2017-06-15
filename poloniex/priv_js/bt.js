@@ -25,13 +25,13 @@ var plus_minus = function(myValue){
 }
 
 var get_premium = function (key) {
-    var polo_krw = polo_ticker['USDT_' + key.toUpperCase()].last / USDT * fx.USD.KRW;
+    var polo_krw = polo_ticker['USDT_' + key.toUpperCase()].last * USDT * fx.USD.KRW;
     var co = coinone_ticker[key].last;
     return (co - polo_krw)/polo_krw * 100;
 }
 
 var btc_to_usd = function (btc) {
-    return btc * polo_ticker['USDT_BTC'].last / USDT;
+    return btc * polo_ticker['USDT_BTC'].last * USDT;
 }
 
 var usd_to_krw = function (usd) {
