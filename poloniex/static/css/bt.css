@@ -1,0 +1,35 @@
+
+body {
+    padding-top: 60px;
+}
+table.price-list {
+    font-size: 8pt;
+}
+.table-container {
+    height: 10em;
+}
+table.scrollable {
+    display: flex;
+    flex-flow: column;
+    height: 95%;
+    width: 100%;
+}
+table.scrollable thead {
+    /* head takes the height it requires, 
+    and it's not scaled when table is resized */
+    flex: 0 0 auto;
+    width: calc(100% - 0.9em);
+}
+table.scrollable tbody {
+    /* body takes all the remaining available space */
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: scroll;
+}
+table.scrollable tbody tr {
+    width: 100%;
+}
+table.scrollable thead, table.scrollable tbody tr {
+    display: table;
+    table-layout: fixed;
+}
