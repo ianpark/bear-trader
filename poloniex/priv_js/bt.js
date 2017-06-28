@@ -34,6 +34,14 @@ var btc_to_usd = function (btc) {
     return btc * polo_ticker['USDT_BTC'].last * USDT;
 }
 
+var usdt_to_btc = function (usdt) {
+    return usdt/polo_ticker['USDT_BTC'].last;
+}
+
+var usdt_to_krw = function (usdt) {
+    return usd_to_krw(usdt * USDT);
+}
+
 var usd_to_krw = function (usd) {
     return usd * fx.USD.KRW;
 }
@@ -98,9 +106,41 @@ app.controller('coinone_ticker_ctrl', ['$scope', '$window', function($scope, $wi
     $scope.plus_minus = $window.plus_minus;
 }]);
 app.controller('polo_ticker_ctrl', ['$scope', '$window', function($scope, $window) {
+    $scope.currency_option = ['USDT', 'BTC'];
     $scope.plus_minus = $window.plus_minus;
     $scope.btc_to_usd = $window.btc_to_usd;
     $scope.btc_to_krw = $window.btc_to_krw;
+    $scope.usdt_to_btc = $window.usdt_to_btc;
+    $scope.usdt_to_krw = $window.usdt_to_krw;
+
+    $scope.show_btc = function(money) {
+        if ($scope.currency=='BTC') {
+            return money;
+        } else if ($scope.currency=='USDT'){
+            return usdt_to_btc(money);
+        } else {
+            return '-';
+        }
+    }
+
+    $scope.show_usdt = function(money) {
+        if ($scope.currency=='BTC') {
+            return $scope.btc_to_usd(money);
+        } else if ($scope.currency=='USDT'){
+            return money;
+        } else {
+            return '-';
+        }
+    }
+    $scope.show_krw = function(money) {
+        if ($scope.currency=='BTC') {
+            return $scope.btc_to_krw(money);
+        } else if ($scope.currency=='USDT'){
+            return $scope.usdt_to_krw(money);
+        } else {
+            return '-';
+        }
+    }
 }]);
 
 
