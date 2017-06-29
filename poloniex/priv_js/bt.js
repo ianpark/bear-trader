@@ -31,6 +31,10 @@ var get_premium = function (key) {
 }
 
 var btc_to_usd = function (btc) {
+    return btc * polo_ticker['USDT_BTC'].last;
+}
+
+var btc_to_usd = function (btc) {
     return btc * polo_ticker['USDT_BTC'].last * USDT;
 }
 
@@ -104,11 +108,19 @@ setInterval(title_updator, 1000);
 var app = angular.module('myApp', []);
 app.controller('coinone_ticker_ctrl', ['$scope', '$window', function($scope, $window) {
     $scope.plus_minus = $window.plus_minus;
+    $scope.getLink = function(key) {
+        if (key == 'btc') {
+            return 'https://coinone.co.kr/chart/?site=Coinone&unit_time=15m';
+        } else {
+            return 'https://coinone.co.kr/chart/?site=Coinone' + key + '&unit_time=15m';
+        }
+    }
 }]);
 app.controller('polo_ticker_ctrl', ['$scope', '$window', function($scope, $window) {
     $scope.currency_option = ['USDT', 'BTC'];
     $scope.plus_minus = $window.plus_minus;
     $scope.btc_to_usd = $window.btc_to_usd;
+    $scope.btc_to_usdt = $window.btc_to_usdt;
     $scope.btc_to_krw = $window.btc_to_krw;
     $scope.usdt_to_btc = $window.usdt_to_btc;
     $scope.usdt_to_krw = $window.usdt_to_krw;
@@ -125,7 +137,7 @@ app.controller('polo_ticker_ctrl', ['$scope', '$window', function($scope, $windo
 
     $scope.show_usdt = function(money) {
         if ($scope.currency=='BTC') {
-            return $scope.btc_to_usd(money);
+            return $scope.btc_to_usdt(money);
         } else if ($scope.currency=='USDT'){
             return money;
         } else {

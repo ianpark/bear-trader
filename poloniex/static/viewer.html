@@ -67,13 +67,13 @@
                             <td>가격</td>
                             <td>포지션</td>
                             <td>김프</td>
-                            <td>1/5/3분</td>
+                            <td>1/5/30분</td>
                             <td>1/6/24시간</td>
                         </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="(key, val) in coinone_ticker">
-                        <td>{{key | uppercase }}</td>
+                        <td><a ng-href="{{getLink(key)}}" target="_blank">{{key | uppercase }}</a></td>
                         <td>{{val.high}}<br><b>{{val.last}}</b><br>{{val.low}}</td>
                         <td>{{((val.high-val.last)/(val.high-val.low)) | number : 2}}</td>
                         <td>
@@ -96,7 +96,7 @@
             </div>
             <div class="col-xs-12 col-sm-7 col-md-6">
                 <div id="polo_ticker" class="table-container" ng-controller="polo_ticker_ctrl" style='height:400px;display:inline-block;'>
-                    <h4>Poloniex 현황
+                    <h4>폴로닉스 현황
                     <select ng-model="currency"
                             ng-init="currency = currency || currency_option[0]"
                             ng-options="x for x in currency_option">
@@ -105,16 +105,18 @@
                     <thead>
                         <tr>
                             <td>Coin</td>
-                            <td>Current (BTC)</td>
-                            <td>Current (USD)</td>
-                            <td>Current (KRW)</td>
+                            <td>BTC</td>
+                            <td>USDT</td>
+                            <td>KRW</td>
                             <td>Position</td>
                             <td>Daily</td>
                         </tr>
                     </thead>
                     <tbody>
                     <tr ng-show="c.name.startsWith(currency)" ng-repeat="c in polo_ticker | orderBy: 'name'">
-                        <td>{{c.name.split('_')[1]}}</td>
+                        <td><a ng-href="https://poloniex.com/exchange#{{c.name}}" target="_blank">
+                        {{c.name.split('_')[1]}}</a>
+                        </td>
                         <td>{{show_btc(c.data.last) | number : 6}}</td>
                         <td>{{show_usdt(c.data.last) | number : 2}}</td>
                         <td>{{show_krw(c.data.last) | number : 0}}</td>
