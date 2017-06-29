@@ -3,10 +3,21 @@ var CO_TICKER = 'https://api.coinone.co.kr/ticker/?currency=all'
 var FX_USD = 'http://api.fixer.io/latest?base=USD&symbols=KRW,EUR,GBP'
 var FX_KRW = 'http://api.fixer.io/latest?base=KRW&symbols=USD,EUR,GBP'
 
+var ls = {
+    set: function (key, obj) {
+        localStorage.setItem(key, JSON.stringify(obj));
+    },
+    get: function (key) {
+        var result = localStorage.getItem(key);
+        return result?JSON.parse(result):{};
+    },
+    clear: function () {
+        window.localStorage.clear();
+    }
+}
 
 var polo_ticker = {};
 var coinone_ticker = {};
-var coinone_price_trend = {};
 var fx = {};
 var USDT = 1.02;
 
@@ -24,10 +35,12 @@ var plus_minus = function(myValue){
     }
 }
 
-var get_premium = function (key) {
-    var polo_krw = polo_ticker['USDT_' + key.toUpperCase()].last * USDT * fx.USD.KRW;
-    var co = coinone_ticker[key].last;
-    return (co - polo_krw)/polo_krw * 100;
+var calculate_premium = function () {
+    for (key in coinone_ticker.data) {
+        var polo_krw = polo_ticker['USDT_' + key.toUpperCase()].last * USDT * fx.USD.KRW;
+        var co = coinone_ticker.data[key].last;
+        coinone_ticker.data[key].premium = (co - polo_krw)/polo_krw * 100;
+    };
 }
 
 var btc_to_usd = function (btc) {
@@ -54,36 +67,45 @@ var btc_to_krw = function (btc) {
     return usd_to_krw(btc_to_usd(btc));
 }
 
+function applyCoinoneData() {
+    var scope = angular.element($("#coinone_ticker")).scope();
+    scope.$apply(function() {
+        scope.coinone_ticker = coinone_ticker;
+    });
+}
+
 function get_coinone_ticker(){
     $.get(CO_TICKER, function(data, status) {
-        coinone_ticker = data;
-        delete coinone_ticker.timestamp;
-        delete coinone_ticker.errorCode;
-        delete coinone_ticker.result;
-        for (key in coinone_ticker) {
-            coinone_ticker[key].premium = get_premium(key);
-        }
-        $.get('/coinone/price_change', function(data, status) {
-            coinone_price_trend = data;
-            coinone_price_trend.forEach(function(item){
-                coinone_ticker[item.currency].trend = item.cases;
+        coinone_ticker.lastUpdate = data.timestamp;
+        coinone_ticker.data = data;
+        delete data.timestamp;
+        delete data.errorCode;
+        delete data.result;
+        $.get('/coinone/price_change', function(trend, status) {
+            trend.forEach(function(item){
+                data[item.currency].trend = item.cases;
             });
-            var scope = angular.element($("#coinone_ticker")).scope();
-            scope.$apply(function() {
-                scope.coinone_ticker = coinone_ticker;
-            });
+            calculate_premium();
+            applyCoinoneData();
+            // Save ticker
+            ls.set('coinone_ticker', coinone_ticker);
         });
     });
 };
 setInterval(get_coinone_ticker, 5000);
 
+function applyPoloData() {
+    var scope = angular.element($("#polo_ticker")).scope();
+    scope.$apply(function() {
+        scope.polo_ticker = convert_to_list(polo_ticker);
+    });
+}
+
 function get_polo_ticker() {
     $.get(POLO_TICKER, function(data, status) {
         polo_ticker = data;
-        var scope = angular.element($("#polo_ticker")).scope();
-        scope.$apply(function() {
-            scope.polo_ticker = convert_to_list(polo_ticker);
-        });
+        applyPoloData();
+        ls.set('polo_ticker', polo_ticker);
     });
 }
 setInterval(get_polo_ticker, 5000);
@@ -99,9 +121,11 @@ function get_fx() {
 setInterval(get_fx, 10000);
 
 function title_updator() {
-    top.document.title = parseInt(coinone_ticker['btc'].last/1000) + 'k ' + 
-                        parseInt(coinone_ticker['eth'].last/1000) + 'k ' +
-                        parseInt(coinone_ticker['xrp'].last);
+    if (coinone_ticker.data) {
+        top.document.title = parseInt(coinone_ticker.data['btc'].last/1000) + 'k ' + 
+                            parseInt(coinone_ticker.data['eth'].last/1000) + 'k ' +
+                            parseInt(coinone_ticker.data['xrp'].last);
+    }
 }
 setInterval(title_updator, 1000);
 
@@ -175,6 +199,10 @@ app.filter('key_starts_with', function(){
 
 
 $(function() {
+    polo_ticker = ls.get('polo_ticker');
+    if (polo_ticker) applyPoloData();
+    coinone_ticker = ls.get('coinone_ticker');
+    if (coinone_ticker) applyCoinoneData();
     get_coinone_ticker();
     get_polo_ticker();
     get_fx();

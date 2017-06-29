@@ -59,8 +59,16 @@
         <div class="row">
             <div class="col-xs-12 col-sm-5 col-md-6">
                 <div id="coinone_ticker" ng-controller="coinone_ticker_ctrl">
-                    <h4>코인원 현황</h4>
-                    <table class="table table-striped price-list" style='border: 1px #bbbbbb solid;max-width: 500px;'>
+                    <table style="width: 100%;max-width: 500px;">
+                        <tr>
+                            <td>
+                                <h4 style="display: inline-block">코인원 현황</h4>
+                            </td>
+                            <td style="text-align: right;">
+                                <span ng-cloak class="ng-cloak" style="font-size: 10px;color: #5577aa"> Last Update: {{coinone_ticker.lastUpdate*1000 | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
+                            </td>
+                    </table>
+                    <table class="table table-striped price-list" style='border: 1px #bbbbbb solid;max-width: 500px;' ng-cloak class="ng-cloak">
                     <thead>
                         <tr>
                             <td>종류</td>
@@ -72,8 +80,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="(key, val) in coinone_ticker">
-                        <td><a ng-href="{{getLink(key)}}" target="_blank">{{key | uppercase }}</a></td>
+                    <tr ng-repeat="(key, val) in coinone_ticker.data">
+                        <td><a ng-href="{{getLink(key)}}" target="_blank"ㅇ>{{key | uppercase }}</a></td>
                         <td>{{val.high}}<br><b>{{val.last}}</b><br>{{val.low}}</td>
                         <td>{{((val.high-val.last)/(val.high-val.low)) | number : 2}}</td>
                         <td>
@@ -96,12 +104,22 @@
             </div>
             <div class="col-xs-12 col-sm-7 col-md-6">
                 <div id="polo_ticker" class="table-container" ng-controller="polo_ticker_ctrl" style='height:400px;display:inline-block;'>
-                    <h4>폴로닉스 현황
-                    <select ng-model="currency"
-                            ng-init="currency = currency || currency_option[0]"
-                            ng-options="x for x in currency_option">
-                    </select></h4>
-                    <table class="table table-striped price-list scrollable" style="border: 1px #bbbbbb solid;max-width: 500px;">
+                    <table style="width: 100%;max-width: 500px;">
+                        <tr>
+                            <td>
+                                <h4 style="display: inline-block">폴로닉스 현황</h4>
+                            </td>
+                            <td style="text-align: right;">
+                            </td>
+                            <td style="text-align: right;">
+                                <select ng-model="currency"
+                                    ng-init="currency = currency || currency_option[0]"
+                                    ng-options="x for x in currency_option"
+                                    ng-cloak class="ng-cloak" >
+                                </select>
+                            </td>
+                    </table>
+                    <table class="table table-striped price-list scrollable" style="border: 1px #bbbbbb solid;max-width: 500px;" ng-cloak class="ng-cloak" >
                     <thead>
                         <tr>
                             <td>Coin</td>
