@@ -43,7 +43,7 @@ var calculate_premium = function () {
     };
 }
 
-var btc_to_usd = function (btc) {
+var btc_to_usdt = function (btc) {
     return btc * polo_ticker['USDT_BTC'].last;
 }
 
@@ -113,9 +113,11 @@ setInterval(get_polo_ticker, 5000);
 function get_fx() {
     $.get(FX_USD, function(data, status) {
         fx[data.base] = data.rates;
+        ls.set('fx', fx);
     });
     $.get(FX_KRW, function(data, status) {
         fx[data.base] = data.rates;
+        ls.set('fx', fx);
     });
 }
 setInterval(get_fx, 10000);
@@ -199,11 +201,13 @@ app.filter('key_starts_with', function(){
 
 
 $(function() {
+    fx = ls.get('fx');
     polo_ticker = ls.get('polo_ticker');
     if (polo_ticker) applyPoloData();
     coinone_ticker = ls.get('coinone_ticker');
     if (coinone_ticker) applyCoinoneData();
+    get_fx();
     get_coinone_ticker();
     get_polo_ticker();
-    get_fx();
+
 });
